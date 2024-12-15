@@ -1,0 +1,91 @@
+module top (
+    input logic clk, rst,                    // Clock and reset
+    input logic [1:0] sw,                    // Selector for instruction
+    output logic [31:0] ALUResult,           // Output from ALU
+    output logic [31:0] RD1, RD2,            // Outputs for debugging (register file reads)
+    output logic [31:0] prode_register_file, // Probe output for register file
+    output logic [6:0] display_led           // Output for in-lab display
+);
+
+    // Instruction definitions
+    logic [31:0] inst_LW, inst_SW, inst_EX;
+    assign inst_LW = 32'b010101_00000_00001_0000_0000_0000_0101; // LW: Load Data_Memory[5] to Register_File[1]
+    assign inst_SW = 32'b010100_00000_00110_0000_0000_0000_0010; // SW: Store Register_File[6] to Data_Memory[2]
+    assign inst_EX = (sw == 2'b01) ? inst_LW : (sw == 2'b10) ? inst_SW : 32'b0;
+
+    // Wires for connections
+    logic [31:0] sign_ext_imm;              // Output from Sign Extend
+    logic [31:0] mem_read_data;             // Data read from Data Memory
+    logic [31:0] alu_input;                 // Input to ALU from MUX_ALUSrc
+    logic [4:0] reg_dst;                    // Output from MUX_RegDst
+
+    // Register File
+    register_file r_f (
+        .clk(clk), 
+        .rst(rst),
+        .A1(inst_EX[25:21]),               // rs
+        .A2(inst_EX[20:16]),               // rt
+        .A3(reg_dst),                      // Destination register
+        .WD3(mem_read_data),               // Data to write back
+        .WE3(inst_EX[31:26] == 6'b010101), // Write Enable for LW only
+        .RD1(RD1),                         // Output data from Register File
+        .RD2(RD2),                         // Output data from Register File
+        .prode(prode_register_file)        // Probe
+    );
+
+    // Sign Extend
+    SignExtend s_ext (
+        .imm(inst_EX[15:0]), 
+        .sign_ext_imm(sign_ext_imm)
+    );
+
+    // MUX for ALUSrc
+    MUX_ALUSrc mux_alu_src (
+        .reg_data(RD2), 
+        .imm_data(sign_ext_imm), 
+        .sel(inst_EX[31:26] == 6'b010101 || inst_EX[31:26] == 6'b010100), 
+        .alu_input(alu_input)
+    );
+
+    // ALU
+    ALU t1 (
+        .SrcA(RD1), 
+        .SrcB(alu_input), 
+        .ALUControl(3'b010),              // Always ADD for LW/SW
+        .ALUResult(ALUResult)
+    );
+
+    // Data Memory
+    data_memory d_mem (
+        .clk(clk), 
+        .rst(rst), 
+        .A(ALUResult[7:0]),               // Address from ALUResult
+        .WD(RD2),                         // Write data from Register File (rt)
+        .WE(inst_EX[31:26] == 6'b010100), // Write Enable for SW only
+        .RD(mem_read_data),               // Read data
+        .prode(prode_register_file)       // Probe for debugging
+    );
+
+    // MUX for MemtoReg
+    MUX_MemtoReg mux_mem_to_reg (
+        .MemtoReg(inst_EX[31:26] == 6'b010101), // Select Data Memory output for LW
+        .ALUResult(ALUResult),
+        .RD(mem_read_data),
+        .MemtoReg_out(mem_read_data)
+    );
+
+    // MUX for RegDst
+    MUX_RegDst mux_reg_dst (
+        .rt(inst_EX[20:16]), 
+        .rd(inst_EX[15:11]), 
+        .sel(1'b0),                       // Always select rt for I-type instructions
+        .reg_dst(reg_dst)
+    );
+
+    // Display Module (Optional for In-Lab)
+    display t2 (
+        .data_in(prode_register_file), 
+        .segments(display_led)
+    );
+
+endmodule
