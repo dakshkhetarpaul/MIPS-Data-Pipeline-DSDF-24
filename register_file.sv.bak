@@ -1,0 +1,28 @@
+module register_file (
+    input logic clk, rst,             // Clock and reset
+    input logic [4:0] A1, A2, A3,     // Register addresses for reading and writing
+    input logic [31:0] WD3,           // Data to write to the register file
+    input logic WE3,                  // Write enable for the register file
+    output logic [31:0] RD1, RD2,     // Data outputs for reading
+    output logic [31:0] prode         // Probe to observe specific register (e.g., RF[1])
+);
+
+    logic [31:0] rf [31:0];           // 32 registers, each 32 bits wide
+
+    // Assign output values for reading
+    assign RD1 = rf[A1];              // RD1 reads the value of the register at address A1
+    assign RD2 = rf[A2];              // RD2 reads the value of the register at address A2
+    assign prode = rf[1];             // Probe is set to observe RF[1]
+
+    // Initialize registers during reset
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            for (int i = 0; i < 32; i++) begin
+                rf[i] <= 32'd0;       // Initialize all registers to 0
+            end
+        end else if (WE3) begin
+            rf[A3] <= WD3;           // Write data to the register at address A3 if write enable is active
+        end
+    end
+
+endmodule
