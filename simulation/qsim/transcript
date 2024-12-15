@@ -1,0 +1,50 @@
+# do lab7dk1051.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 21:42:12 on Nov 26,2024
+# vlog -work work lab7dk1051.vo 
+# -- Compiling module top
+# 
+# Top level modules:
+# 	top
+# End time: 21:42:13 on Nov 26,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 21:42:13 on Nov 26,2024
+# vlog -work work waveform_top.vwf.vt 
+# -- Compiling module top_vlg_sample_tst
+# -- Compiling module top_vlg_check_tst
+# -- Compiling module top_vlg_vec_tst
+# 
+# Top level modules:
+# 	top_vlg_vec_tst
+# End time: 21:42:13 on Nov 26,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -c -do "lab7dk1051.do" 
+# Start time: 21:42:13 on Nov 26,2024
+# Loading work.top_vlg_vec_tst
+# Loading work.top
+# Loading cycloneive_ver.cycloneive_io_obuf
+# Loading cycloneive_ver.cycloneive_io_ibuf
+# Loading cycloneive_ver.cycloneive_lcell_comb
+# Loading altera_ver.dffeas
+# Loading cycloneive_ver.cycloneive_ram_block
+# Loading cycloneive_ver.cycloneive_ram_register
+# Loading cycloneive_ver.cycloneive_ram_pulse_generator
+# Loading work.top_vlg_sample_tst
+# Loading work.top_vlg_check_tst
+# Loading altera_ver.PRIM_GDFF_LOW
+# ** Warning: Design size of 77316 statements exceeds ModelSim Altera Starter recommended capacity.
+# Expect performance to be adversely affected.
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/i386-linux-gnu/libpthread.so.0 : module was loaded at an absolute address.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/i386-linux-gnu/libdl.so.2 : module was loaded at an absolute address.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/i386-linux-gnu/libm.so.6 : module was loaded at an absolute address.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/i386-linux-gnu/librt.so.1 : module was loaded at an absolute address.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/i386-linux-gnu/libc.so.6 : module was loaded at an absolute address.
+# ** Warning: (vsim-3116) Problem reading symbols from /lib/ld-linux.so.2 : module was loaded at an absolute address.
+# Simulation passed !
+# ** Note: $finish    : waveform_top.vwf.vt(4515)
+#    Time: 1 us  Iteration: 0  Instance: /top_vlg_vec_tst/tb_out
+# End time: 21:42:20 on Nov 26,2024, Elapsed time: 0:00:07
+# Errors: 0, Warnings: 8
